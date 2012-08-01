@@ -158,14 +158,12 @@ class GameLogic
   def turn5Logic
     testForWinningMovesComputerFirst
     checkIfMovedTestWhichOption
-    @moved=false
-    return @board
+    makeMove
   end
   def turn7Logic
     testForWinningMovesComputerFirst
     checkIfMovedTestWhichOptionSet
-    @moved=false
-    return @board
+    makeMove
   end
   def turn9Logic
     fillInASpace 2
@@ -360,50 +358,60 @@ class GameLogic
 
 
   def turn2Logic
+    takeMoveSecondMove
+    return @board
+  end
+  def turn4Logic
+    testForDefendingMoves
+    checkIfMovedCenterMoveSet0
+    testOptions1to4
+    checkIfMovedFillInASpace
+    makeMove
+  end
+  def turn6Logic
+    testForWinningMovesComputerSecond
+    checkIfMovedTestForDefendingMoves
+    checkIfMovedFillInASpace
+    makeMove
+  end
+  def turn8Logic
+    testForWinningMovesComputerSecond
+    checkIfMovedTestForDefendingMoves
+    checkIfMovedFillInASpace
+    makeMove
+  end
+  def testOptions1to4
+    topLeftMoveTest1
+    topRightMoveTest2
+    bottomLeftMoveTest3
+    bottomRightMoveTest4
+  end
+  def makeMove
+    @moved=false
+    return @board
+  end
+  def takeMoveSecondMove
     if centerMoveNotTaken?
       @moveOptions=0
       @board[4]=1
     else
       takeRandomSpot 1
     end
-    return @board
   end
-  def turn4Logic
-    testForDefendingMoves
+  def checkIfMovedTestForDefendingMoves
+    if !@moved
+      testForDefendingMoves
+    end
+  end
+  def checkIfMovedCenterMoveSet0
     if !@moved
       centerMoveSet0
     end
-    topLeftMoveTest1
-    topRightMoveTest2
-    bottomLeftMoveTest3
-    bottomRightMoveTest4
-    if !@moved
-      fillInASpace 1
-    end
-    @moved=false
-    return @board
   end
-  def turn6Logic
-    testForWinningMovesComputerSecond
-    if !@moved
-      testForDefendingMoves
-    end
+  def checkIfMovedFillInASpace
     if !@moved
       fillInASpace 1
     end
-    @moved=false
-    return @board
-  end
-  def turn8Logic
-    testForWinningMovesComputerSecond
-    if !@moved
-      testForDefendingMoves
-    end
-    if !@moved
-      fillInASpace 1
-    end
-    @moved=false
-    return @board
   end
   def fillInASpace player
     counter=-1

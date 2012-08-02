@@ -45,4 +45,7 @@ class Output
   def self.whoFirst who
     puts "Who Goes First:#{who}"
   end
+  def self.makeCorrectMove
+    puts "Make a correct move:"
+  end
 end

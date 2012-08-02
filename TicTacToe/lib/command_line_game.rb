@@ -4,52 +4,76 @@ require_relative '../lib/game_logic'
 
 
 
-game=GameLogic.new
-winTester=CheckForWin.new
-game.fullSetup
-Output.welcome
-game.fullSetup
-game.setWhosFirst
-Output.board game.board
-Output.move
-if game.first==1
-  Output.whoFirst "Computer"
-  game.computerMoveFirst
-  Output.board game.board
-  while game.turn<=9 && !game.winTester.checkForWin?(game.board,2)
-    game.board[gets.to_i]=1
-    game.turn+=1
 
-    game.computerMoveFirst
+
+class CommandLineGame
+  attr_accessor :turn,:first,:ai,:winTester,:game
+  def initialize
+    @ai=GameLogic.new
+    @winTester=CheckForWin.new
+    @game=Board.new
+    @turn=1
+    @first=rand(2)+1
+  end
+  def startUp
+    Output.welcome
     Output.board game.board
-  end
-  if game.turn==10&&!game.winTester.checkForWin?(game.board,2)
-    Output.tie
-  end
-  if game.winTester.checkForWin?(game.board,2)
-    Output.lose
-  end
+    Output.move
 
-else
-  Output.whoFirst "You"
-  while game.turn<=9 && !game.winTester.checkForWin?(game.board,1)
-    game.board[gets.to_i]=2
-    game.turn+=1
-    game.computerMoveSecond
-    Output.board game.board
   end
-  if game.turn==10&&!game.winTester.checkForWin?(game.board,1)
-    Output.tie
-  end
-  if game.winTester.checkForWin?(game.board,1)
-    Output.lose
-  end
+  def computerFirstLoop
+    Output.whoFirst "Computer"
+    @ai.computerMoveFirst @game.board,@turn
+    Output.board @game.board
 
+    while @turn<=9 && !@winTester.checkForWin?(@game.board,1)
+      move=gets.to_i
+      while move<0||move>8||@game.board[move]!=0
+        Output.makeCorrectMove
+        move=gets.to_i
+      end
+      @game.board[move]=1
+      @turn+=1
+      @game.board[@ai.computerMoveSecond @game.board,@turn]=1
+      Output.board @game.board
+    end
+
+    if @turn==10&&!@winTester.checkForWin?(@game.board,1)
+      Output.tie
+    end
+    if @winTester.checkForWin?(@game.board,1)
+      Output.lose
+    end
+  end
+  def computerSecondLoop
+    Output.whoFirst "You"
+    while @turn<=9 && !@winTester.checkForWin?(@game.board,2)
+      move=gets.to_i
+      move=checkMove move
+      while move<0||move>8||game.board[move]!=0
+        puts "Make a correct move:"
+        move=gets.to_i
+      end
+      @game.board[move]=2
+      @turn+=1
+      @game.board[@ai.computerMoveSecond @game.board,@turn]=2
+      Output.board @game.board
+    end
+    if @turn==10&&!@winTester.checkForWin?(@game.board,2)
+      Output.tie
+    end
+    if @winTester.checkForWin?(@game.board,2)
+      Output.lose
+    end
+  end
+  def checkMove move
+    while move<0||move>8||game.board[move]!=0
+      puts "Make a correct move:"
+      move=gets.to_i
+    end
+    move
+  end
 end
-Output.board game.board
-
-
-
 
 
 
